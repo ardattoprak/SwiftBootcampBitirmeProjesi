@@ -57,7 +57,6 @@ class AnaSayfa: UIViewController {
         collectionViewUrunler.collectionViewLayout = tasarim
         
         // Görünüm
-        collectionViewUrunler.backgroundColor = UIColor(white: 0.97, alpha: 1.0) // Hafif gri arka plan
         collectionViewUrunler.showsVerticalScrollIndicator = true
         collectionViewUrunler.showsHorizontalScrollIndicator = false
         collectionViewUrunler.alwaysBounceVertical = true
@@ -66,7 +65,7 @@ class AnaSayfa: UIViewController {
         searchBar.delegate = self
         searchBar.placeholder = "Ürün, kategori veya marka ara..."
         searchBar.showsCancelButton = true // Cancel düğmesini göster
-        searchBar.tintColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0) // iOS mavi
+        searchBar.tintColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         searchBar.barTintColor = .white
         
         // Segment Control

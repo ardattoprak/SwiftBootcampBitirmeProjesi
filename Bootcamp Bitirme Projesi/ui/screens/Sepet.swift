@@ -35,27 +35,23 @@ class Sepet: UIViewController {
         // Navigation Bar
         navigationItem.title = "Sepetim"
         
-        // Custom Font for labelSepettekiUrunler
         if let customFont = UIFont(name: "Pacifico-Regular", size: 24) {
             labelSepettekiUrunler.font = customFont
         } else {
-            // Fallback to system font if custom font fails to load
             labelSepettekiUrunler.font = UIFont.systemFont(ofSize: 24)
             print("Failed to load custom font for labelSepettekiUrunler")
         }
         
        
         
-        // TableView
         tableViewSepet.delegate = self
         tableViewSepet.dataSource = self
         
-        // Satın Al Butonu
-        buttonTumunuSatinAl.layer.cornerRadius = 20 // Daha oval buton görünümü
-        buttonTumunuSatinAl.clipsToBounds = true // Köşeleri düzgün kesmek için
-        buttonTumunuSatinAl.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0) // iOS mavi
+
+        buttonTumunuSatinAl.layer.cornerRadius = 20
+        buttonTumunuSatinAl.clipsToBounds = true
+        buttonTumunuSatinAl.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         
-        // Boş sepet mesajı için backgroundView oluşturma
         let emptyView = UIView()
         
         let imageView = UIImageView(image: UIImage(systemName: "cart"))
@@ -73,11 +69,11 @@ class Sepet: UIViewController {
         let actionButton = UIButton(type: .system)
         actionButton.setTitle("ALIŞVERİŞE BAŞLA", for: .normal)
         actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        actionButton.tintColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0) // iOS mavi
+        actionButton.tintColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         actionButton.layer.borderWidth = 1
         actionButton.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0).cgColor
-        actionButton.layer.cornerRadius = 20 // Daha oval buton görünümü
-        actionButton.clipsToBounds = true // Köşeleri düzgün kesmek için
+        actionButton.layer.cornerRadius = 20
+        actionButton.clipsToBounds = true
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         actionButton.addTarget(self, action: #selector(alisveriseBaslaButtonTapped), for: .touchUpInside)
         
@@ -86,18 +82,18 @@ class Sepet: UIViewController {
         emptyView.addSubview(actionButton)
         
         NSLayoutConstraint.activate([
-            // İkon kısıtlamaları
+
             imageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -50),
             imageView.widthAnchor.constraint(equalToConstant: 100),
             imageView.heightAnchor.constraint(equalToConstant: 100),
             
-            // Mesaj etiketi kısıtlamaları
+
             messageLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
             messageLabel.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor, constant: 16),
             messageLabel.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: -16),
             
-            // Buton kısıtlamaları
+
             actionButton.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 24),
             actionButton.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
             actionButton.widthAnchor.constraint(equalToConstant: 200),
@@ -108,7 +104,7 @@ class Sepet: UIViewController {
     }
     
     @objc func alisveriseBaslaButtonTapped() {
-        tabBarController?.selectedIndex = 0 // Ana sayfaya geç
+        tabBarController?.selectedIndex = 0
     }
     
     func setupBindings() {
@@ -116,14 +112,14 @@ class Sepet: UIViewController {
             .subscribe(onNext: { liste in
                 self.sepetUrunListesi = liste
                 
-                // Toplam tutarı güncelle
+
                 let toplamTutar = self.sepetViewModel.sepetToplamTutarHesapla()
                 self.labelToplamTutar.text = "Toplam Tutar: \(toplamTutar) ₺"
                 
-                // Boş sepet durumunu göster/gizle
+
                 self.tableViewSepet.backgroundView?.isHidden = !liste.isEmpty
                 self.labelToplamTutar.isHidden = liste.isEmpty
-                self.buttonTumunuSatinAl.isHidden = liste.isEmpty // Buton tamamen gizleniyor
+                self.buttonTumunuSatinAl.isHidden = liste.isEmpty
                 
                 DispatchQueue.main.async {
                     self.tableViewSepet.reloadData()
@@ -132,10 +128,9 @@ class Sepet: UIViewController {
     }
     
     @IBAction func tumunuSatinAlButtonTapped(_ sender: UIButton) {
-        // Satın alma işlemi
+
         let alert = UIAlertController(title: "Satın Alma", message: "Satın alma işlemi başarıyla tamamlandı.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "Tamam", style: .default) { _ in
-            // Sepetteki tüm ürünleri silme işlemi
             let dispatchGroup = DispatchGroup()
             
             for urun in self.sepetUrunListesi {
@@ -151,7 +146,6 @@ class Sepet: UIViewController {
             }
             
             dispatchGroup.notify(queue: .main) {
-                // Tüm silme işlemleri tamamlandıktan sonra sepeti yenile
                 self.sepetViewModel.sepetListesiniYukle()
             }
         }
@@ -178,45 +172,45 @@ extension Sepet: UITableViewDelegate, UITableViewDataSource {
         return 100
     }
     
-    // Sağdan kaydırmalı silme işlemi
+
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let urun = sepetUrunListesi[indexPath.row]
-        print("Silme işlemi için hazırlanıyor: \(urun.ad ?? "")") // Debug log
+        print("Silme işlemi için hazırlanıyor: \(urun.ad ?? "")")
         
         let silAction = UIContextualAction(style: .destructive, title: "Sil") { (action, view, completion) in
-            print("Sil butonu tıklandı") // Debug log
+            print("Sil butonu tıklandı")
             
-            // Silme işlemi için onay iste
+
             if let sepetid = urun.sepetid {
-                print("Ürün sepetID: \(sepetid)") // Debug log
+                print("Ürün sepetID: \(sepetid)")
                 
                 let alert = UIAlertController(title: "Ürünü Sil", message: "\(urun.ad ?? "") sepetten silinecek. Emin misiniz?", preferredStyle: .alert)
                 
                 let iptalAction = UIAlertAction(title: "İptal", style: .cancel) { _ in
-                    print("Silme işlemi iptal edildi") // Debug log
-                    completion(false) // Swipe işlemini iptal et
+                    print("Silme işlemi iptal edildi")
+                    completion(false)
                 }
                 alert.addAction(iptalAction)
                 
                 let silAction = UIAlertAction(title: "Sil", style: .destructive) { _ in
-                    print("Silme işlemi onaylandı, API çağrısı yapılıyor...") // Debug log
+                    print("Silme işlemi onaylandı, API çağrısı yapılıyor...")
                     
-                    // Ürünü sepetten sil
+
                     self.sepetViewModel.sepetUrunSil(sepetid: sepetid) { basarili, mesaj in
-                        print("API yanıtı: başarı=\(basarili), mesaj=\(mesaj)") // Debug log
+                        print("API yanıtı: başarı=\(basarili), mesaj=\(mesaj)")
                         
                         DispatchQueue.main.async {
                             if basarili {
-                                // Başarılı silme işlemi sonrası bildirim
-                                print("Silme başarılı, alert gösteriliyor") // Debug log
+                        
+                                print("Silme başarılı, alert gösteriliyor") 
                                 let basariAlert = UIAlertController(title: "Başarılı", message: "\(urun.ad ?? "") sepetten başarıyla silindi.", preferredStyle: .alert)
                                 let tamamAction = UIAlertAction(title: "Tamam", style: .default, handler: nil)
                                 basariAlert.addAction(tamamAction)
                                 self.present(basariAlert, animated: true)
                             } else {
-                                // Hata durumunda bildirim
-                                print("Silme başarısız, hata alert'i gösteriliyor") // Debug log
+                
+                                print("Silme başarısız, hata alert'i gösteriliyor")
                                 let hataAlert = UIAlertController(title: "Hata", message: "Silme işlemi sırasında bir hata oluştu: \(mesaj)", preferredStyle: .alert)
                                 let tamamAction = UIAlertAction(title: "Tamam", style: .default, handler: nil)
                                 hataAlert.addAction(tamamAction)
@@ -224,19 +218,18 @@ extension Sepet: UITableViewDelegate, UITableViewDataSource {
                             }
                         }
                     }
-                    completion(true) // Swipe işlemini tamamla
+                    completion(true)
                 }
                 alert.addAction(silAction)
                 
                 self.present(alert, animated: true)
             } else {
-                print("HATA: sepetid nil!") // Debug log
+                print("HATA: sepetid nil!")
                 completion(false)
             }
         }
         
-        // Silme butonunun görünümünü özelleştirme
-        silAction.backgroundColor = UIColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0) // Kırmızı
+        silAction.backgroundColor = UIColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0)
         silAction.image = UIImage(systemName: "trash")
         
         return UISwipeActionsConfiguration(actions: [silAction])

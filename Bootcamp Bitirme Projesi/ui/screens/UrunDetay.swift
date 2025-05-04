@@ -39,44 +39,40 @@ class UrunDetay: UIViewController {
     }
     
     func setupUI() {
-        // Navigation bar title
         navigationItem.title = "Ürün Detayı"
         
         
         if let customFont = UIFont(name: "Pacifico-Regular", size: 24) {
             labelUrunDetay.font = customFont
         } else {
-            // Fallback to system font if custom font fails to load
             labelUrunDetay.font = UIFont.systemFont(ofSize: 24)
             print("Failed to load custom font for labelSepettekiUrunler")
         }
         
-        // UI Bileşenlerini özelleştirme
         imageViewUrun.layer.cornerRadius = 10
         imageViewUrun.clipsToBounds = true
         
-        buttonSepeteEkle.layer.cornerRadius = 20 // Daha oval buton görünümü
-        buttonSepeteEkle.clipsToBounds = true // Köşeleri düzgün kesmek için
-        buttonSepeteEkle.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0) // iOS Mavi
-        // Sepete Ekle butonu metnini tek satırda tut
+        buttonSepeteEkle.layer.cornerRadius = 20
+        buttonSepeteEkle.clipsToBounds = true
+        buttonSepeteEkle.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         buttonSepeteEkle.titleLabel?.numberOfLines = 1
         buttonSepeteEkle.titleLabel?.adjustsFontSizeToFitWidth = true
         
-        buttonFavorilereEkle.layer.cornerRadius = 20 // Daha oval buton görünümü
-        buttonFavorilereEkle.clipsToBounds = true // Köşeleri düzgün kesmek için
+        buttonFavorilereEkle.layer.cornerRadius = 20
+        buttonFavorilereEkle.clipsToBounds = true
         buttonFavorilereEkle.layer.borderWidth = 1
         buttonFavorilereEkle.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0).cgColor
         buttonFavorilereEkle.setTitleColor(UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0), for: .normal)
-        // Buton metninin tek satırda görüntülenmesini sağlama
+
         buttonFavorilereEkle.titleLabel?.numberOfLines = 1
         buttonFavorilereEkle.titleLabel?.adjustsFontSizeToFitWidth = true
         buttonFavorilereEkle.titleLabel?.lineBreakMode = .byClipping
         
-        // Buton genişliklerini stack view'da eşitle - her iki buton için de aynı genişliği ayarla
+
         if let superview = buttonFavorilereEkle.superview, superview is UIStackView {
             let stackView = superview as! UIStackView
-            stackView.distribution = .fillEqually // Butonların eşit genişlikte olmasını sağla
-            stackView.spacing = 10 // Butonlar arasında yeterli boşluk bırak
+            stackView.distribution = .fillEqually
+            stackView.spacing = 10
         }
         
         // Stepper ayarları
@@ -106,7 +102,7 @@ class UrunDetay: UIViewController {
         labelUrunKategori.text = "\(urun.kategori ?? "")"
         labelUrunDetay.text = "\(urun.ad!) Detayları"
         
-        // Resim yükleme
+
         if let resimAdi = urun.resim, let resimURL = URL(string: "http://kasimadalan.pe.hu/urunler/resimler/\(resimAdi)") {
             DispatchQueue.global().async {
                 if let data = try? Data(contentsOf: resimURL) {
@@ -125,10 +121,8 @@ class UrunDetay: UIViewController {
     
     @IBAction func sepeteEkleButtonTapped(_ sender: UIButton) {
         if let urun = urun {
-            // Sepete ekleme işlemi
             sepetViewModel.sepeteEkle(urun: urun, adet: secilenAdet)
             
-            // Başarılı mesajı göster
             let alert = UIAlertController(title: "Sepete Eklendi", message: "\(urun.ad ?? "") sepete başarıyla eklendi.", preferredStyle: .alert)
             
             let alisveriseDevamAction = UIAlertAction(title: "Tamam", style: .default) { [weak self] _ in
@@ -146,28 +140,26 @@ class UrunDetay: UIViewController {
             var mesaj = ""
             
             if favorideMi {
-                // Favorilerden çıkar
                 let basarili = favorilerViewModel.favoridenCikar(urun: urun)
                 mesaj = basarili ? "\(urun.ad ?? "") favorilerden çıkarıldı." : "Favorilerden çıkarma işlemi başarısız oldu."
                 favorideMi = false
                 
-                // Favoriler sayfasının yenilenmesi için bildirim gönder
                 NotificationCenter.default.post(name: NSNotification.Name("FavorilerGuncellendi"), object: nil)
             } else {
-                // Favorilere ekle
+
                 let basarili = favorilerViewModel.favoriyeEkle(urun: urun)
                 mesaj = basarili ? "\(urun.ad ?? "") favorilere eklendi." : "Favorilere ekleme işlemi başarısız oldu."
                 favorideMi = true
             }
             
-            // Favori butonunun görünümünü güncelle
+
             favoriButtonGuncelle()
             
-            // Başarılı mesajı göster
+ 
             let alert = UIAlertController(title: favorideMi ? "Favorilere Eklendi" : "Favorilerden Çıkarıldı", message: mesaj, preferredStyle: .alert)
             
             let tamamAction = UIAlertAction(title: "Tamam", style: .default) { _ in
-                // Alert'i kapat
+
             }
             alert.addAction(tamamAction)
             

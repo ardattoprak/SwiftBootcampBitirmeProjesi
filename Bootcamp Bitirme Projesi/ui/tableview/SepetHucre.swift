@@ -22,11 +22,9 @@ class SepetHucre: UITableViewCell {
     }
     
     private func setupUI() {
-        // Görsel ayarları
         imageViewUrun.layer.cornerRadius = 8
         imageViewUrun.clipsToBounds = true
         
-        // Hücre ayarları
         selectionStyle = .none
     }
     
@@ -39,14 +37,13 @@ class SepetHucre: UITableViewCell {
             labelUrunFiyat.text = "\(fiyat) ₺"
         }
         
-        // Adet bilgisini göster
+
         if let adet = urun.siparisAdeti {
             labelAdet.text = "Adet: \(adet)"
         } else {
-            labelAdet.text = "Adet: 1" // Varsayılan değer
+            labelAdet.text = "Adet: 1"
         }
         
-        // Resim yükleme
         if let resimAdi = urun.resim, let resimURL = URL(string: "http://kasimadalan.pe.hu/urunler/resimler/\(resimAdi)") {
             DispatchQueue.global().async {
                 if let data = try? Data(contentsOf: resimURL) {
