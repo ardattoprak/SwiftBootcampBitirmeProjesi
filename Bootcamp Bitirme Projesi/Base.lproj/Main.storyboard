@@ -491,8 +491,8 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <searchBar contentMode="redraw" placeholder="Ürün veya marka ara" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vdN-Kf-Qgn">
-                                <rect key="frame" x="60" y="140" width="333" height="56"/>
+                            <searchBar contentMode="redraw" placeholder="Ürün veya marka ara" translatesAutoresizingMaskIntoConstraints="NO" id="vdN-Kf-Qgn">
+                                <rect key="frame" x="0.0" y="140" width="393" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="7ch-Wr-Bhz" id="5EX-uf-rz2"/>
@@ -510,7 +510,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hbh-1P-BDh"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemGray6Color"/>
                         <constraints>
                             <constraint firstItem="gvl-AO-Tvm" firstAttribute="top" secondItem="vdN-Kf-Qgn" secondAttribute="bottom" constant="10" id="4CZ-BI-dxl"/>
                             <constraint firstItem="fhz-t6-gja" firstAttribute="bottom" secondItem="hbh-1P-BDh" secondAttribute="bottom" id="A3F-uo-gyn"/>
@@ -523,7 +523,7 @@
                             <constraint firstItem="gvl-AO-Tvm" firstAttribute="leading" secondItem="hbh-1P-BDh" secondAttribute="leading" constant="20" id="kWa-ga-GR5"/>
                             <constraint firstItem="fhz-t6-gja" firstAttribute="trailing" secondItem="hbh-1P-BDh" secondAttribute="trailing" id="khU-m3-RPe"/>
                             <constraint firstItem="hb3-sS-AUo" firstAttribute="trailing" secondItem="hbh-1P-BDh" secondAttribute="trailing" id="pRl-Ic-H6h"/>
-                            <constraint firstItem="vdN-Kf-Qgn" firstAttribute="leading" secondItem="hbh-1P-BDh" secondAttribute="leading" constant="60" id="pvJ-5N-eiY"/>
+                            <constraint firstItem="vdN-Kf-Qgn" firstAttribute="leading" secondItem="hbh-1P-BDh" secondAttribute="leading" id="pvJ-5N-eiY"/>
                             <constraint firstItem="vdN-Kf-Qgn" firstAttribute="top" secondItem="hb3-sS-AUo" secondAttribute="bottom" id="xfx-kL-VS5"/>
                         </constraints>
                     </view>

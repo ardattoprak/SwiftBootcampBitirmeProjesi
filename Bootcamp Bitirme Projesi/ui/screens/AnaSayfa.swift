@@ -63,10 +63,9 @@ class AnaSayfa: UIViewController {
         
         // SearchBar
         searchBar.delegate = self
-        searchBar.placeholder = "Ürün, kategori veya marka ara..."
-        searchBar.showsCancelButton = true // Cancel düğmesini göster
-        searchBar.tintColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
-        searchBar.barTintColor = .white
+    
+        searchBar.showsCancelButton = true
+      
         
         // Segment Control
         segmentedControlKategoriler.removeAllSegments()
@@ -91,8 +90,9 @@ class AnaSayfa: UIViewController {
                 DispatchQueue.main.async {
                     self.collectionViewUrunler.reloadData()
                 }
-            }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag) //view gittiğinde bu çantadaki observ edenler sonlandırılsın diye
     }
+    
     
     @objc func segmentChanged() {
         switch segmentedControlKategoriler.selectedSegmentIndex {

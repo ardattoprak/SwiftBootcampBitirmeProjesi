@@ -50,7 +50,7 @@ class Sepet: UIViewController {
 
         buttonTumunuSatinAl.layer.cornerRadius = 20
         buttonTumunuSatinAl.clipsToBounds = true
-        buttonTumunuSatinAl.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
+ 
         
         let emptyView = UIView()
         
@@ -128,7 +128,7 @@ class Sepet: UIViewController {
     }
     
     @IBAction func tumunuSatinAlButtonTapped(_ sender: UIButton) {
-        // Önce bir teyit alert'i göster
+        // ilk alert emin misiniz alertı
         let confirmAlert = UIAlertController(title: "Satın Alma", message: "Tüm ürünleri satın almak istediğinize emin misiniz?", preferredStyle: .alert)
         
         let iptalAction = UIAlertAction(title: "İptal", style: .cancel)
@@ -138,12 +138,6 @@ class Sepet: UIViewController {
             // Satın alma işlemini başlat
             let loadingAlert = UIAlertController(title: nil, message: "İşlem yapılıyor...", preferredStyle: .alert)
             
-            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
-            loadingIndicator.hidesWhenStopped = true
-            loadingIndicator.style = .medium
-            loadingIndicator.startAnimating()
-            
-            loadingAlert.view.addSubview(loadingIndicator)
             self.present(loadingAlert, animated: true)
             
             let dispatchGroup = DispatchGroup()
