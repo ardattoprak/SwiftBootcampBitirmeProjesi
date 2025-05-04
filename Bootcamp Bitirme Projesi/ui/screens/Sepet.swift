@@ -128,17 +128,37 @@ class Sepet: UIViewController {
     }
     
     @IBAction func tumunuSatinAlButtonTapped(_ sender: UIButton) {
-
-        let alert = UIAlertController(title: "Satın Alma", message: "Satın alma işlemi başarıyla tamamlandı.", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Tamam", style: .default) { _ in
-            let dispatchGroup = DispatchGroup()
+        // Önce bir teyit alert'i göster
+        let confirmAlert = UIAlertController(title: "Satın Alma", message: "Tüm ürünleri satın almak istediğinize emin misiniz?", preferredStyle: .alert)
+        
+        let iptalAction = UIAlertAction(title: "İptal", style: .cancel)
+        confirmAlert.addAction(iptalAction)
+        
+        let satinAlAction = UIAlertAction(title: "Satın Al", style: .default) { _ in
+            // Satın alma işlemini başlat
+            let loadingAlert = UIAlertController(title: nil, message: "İşlem yapılıyor...", preferredStyle: .alert)
             
-            for urun in self.sepetUrunListesi {
-                if let sepetid = urun.sepetid {
+            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+            loadingIndicator.hidesWhenStopped = true
+            loadingIndicator.style = .medium
+            loadingIndicator.startAnimating()
+            
+            loadingAlert.view.addSubview(loadingIndicator)
+            self.present(loadingAlert, animated: true)
+            
+            let dispatchGroup = DispatchGroup()
+            var basariliSilmeSayisi = 0
+            var hataliUrunler = [String]()
+            
+            for (index, urun) in self.sepetUrunListesi.enumerated() {
+                if let sepetId = urun.sepetId {
                     dispatchGroup.enter()
-                    self.sepetViewModel.sepetUrunSil(sepetid: sepetid) { basarili, mesaj in
-                        if !basarili {
-                            print("Ürün silinirken hata: \(mesaj)")
+                    self.sepetViewModel.sepetUrunSil(sepetid: sepetId) { basarili, mesaj in
+                        if basarili {
+                            basariliSilmeSayisi += 1
+                        } else {
+                            hataliUrunler.append(urun.ad ?? "Bilinmeyen ürün")
+                            print("HATA: Ürün silme hatası - Ürün: \(urun.ad ?? "Bilinmeyen ürün"), SepetId: \(sepetId), Hata Mesajı: \(mesaj)")
                         }
                         dispatchGroup.leave()
                     }
@@ -146,11 +166,45 @@ class Sepet: UIViewController {
             }
             
             dispatchGroup.notify(queue: .main) {
-                self.sepetViewModel.sepetListesiniYukle()
+                loadingAlert.dismiss(animated: true) {
+                    if basariliSilmeSayisi == self.sepetUrunListesi.count {
+
+                        let successAlert = UIAlertController(title: "Başarılı", message: "Satın alma işlemi başarıyla tamamlandı.", preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Tamam", style: .default)
+                        successAlert.addAction(okAction)
+                        self.present(successAlert, animated: true)
+                    } else if basariliSilmeSayisi > 0 && !hataliUrunler.isEmpty {
+                        print("KISMEN BAŞARILI: \(basariliSilmeSayisi) ürün başarıyla silindi, \(hataliUrunler.count) ürün silinemedi")
+                        print("HATA DETAYLARI: Silinemeyenler: \(hataliUrunler.joined(separator: ", "))")
+                        
+                        let partialSuccessAlert = UIAlertController(title: "Kısmen Başarılı", 
+                                                                  message: "\(basariliSilmeSayisi) ürün satın alındı, ancak \(hataliUrunler.count) ürün işlemi sırasında hata oluştu.", 
+                                                                  preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Tamam", style: .default)
+                        partialSuccessAlert.addAction(okAction)
+                        self.present(partialSuccessAlert, animated: true)
+                    } else if basariliSilmeSayisi > 0 {
+                        let successAlert = UIAlertController(title: "Başarılı", message: "Satın alma işlemi başarıyla tamamlandı.", preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Tamam", style: .default)
+                        successAlert.addAction(okAction)
+                        self.present(successAlert, animated: true)
+                    } else {
+                        
+                        let failureAlert = UIAlertController(title: "Hata",
+                                                           message: "Satın alma işlemi sırasında hata oluştu. Lütfen daha sonra tekrar deneyin.", 
+                                                           preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Tamam", style: .default)
+                        failureAlert.addAction(okAction)
+                        self.present(failureAlert, animated: true)
+                    }
+                    
+                    self.sepetViewModel.sepetListesiniYukle()
+                }
             }
         }
-        alert.addAction(okAction)
-        present(alert, animated: true)
+        confirmAlert.addAction(satinAlAction)
+        
+        present(confirmAlert, animated: true)
     }
 }
 
@@ -182,8 +236,8 @@ extension Sepet: UITableViewDelegate, UITableViewDataSource {
             print("Sil butonu tıklandı")
             
 
-            if let sepetid = urun.sepetid {
-                print("Ürün sepetID: \(sepetid)")
+            if let sepetId = urun.sepetId {
+                print("Ürün sepetID: \(sepetId)")
                 
                 let alert = UIAlertController(title: "Ürünü Sil", message: "\(urun.ad ?? "") sepetten silinecek. Emin misiniz?", preferredStyle: .alert)
                 
@@ -197,7 +251,7 @@ extension Sepet: UITableViewDelegate, UITableViewDataSource {
                     print("Silme işlemi onaylandı, API çağrısı yapılıyor...")
                     
 
-                    self.sepetViewModel.sepetUrunSil(sepetid: sepetid) { basarili, mesaj in
+                    self.sepetViewModel.sepetUrunSil(sepetid: sepetId) { basarili, mesaj in
                         print("API yanıtı: başarı=\(basarili), mesaj=\(mesaj)")
                         
                         DispatchQueue.main.async {
@@ -224,7 +278,7 @@ extension Sepet: UITableViewDelegate, UITableViewDataSource {
                 
                 self.present(alert, animated: true)
             } else {
-                print("HATA: sepetid nil!")
+                print("HATA: sepetId nil!")
                 completion(false)
             }
         }

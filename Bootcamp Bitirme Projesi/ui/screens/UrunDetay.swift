@@ -54,16 +54,10 @@ class UrunDetay: UIViewController {
         
         buttonSepeteEkle.layer.cornerRadius = 20
         buttonSepeteEkle.clipsToBounds = true
-        buttonSepeteEkle.backgroundColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
-        buttonSepeteEkle.titleLabel?.numberOfLines = 1
-        buttonSepeteEkle.titleLabel?.adjustsFontSizeToFitWidth = true
         
         buttonFavorilereEkle.layer.cornerRadius = 20
         buttonFavorilereEkle.clipsToBounds = true
-        buttonFavorilereEkle.layer.borderWidth = 1
-        buttonFavorilereEkle.layer.borderColor = UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0).cgColor
-        buttonFavorilereEkle.setTitleColor(UIColor(red: 0, green: 122/255, blue: 255/255, alpha: 1.0), for: .normal)
-
+        
         buttonFavorilereEkle.titleLabel?.numberOfLines = 1
         buttonFavorilereEkle.titleLabel?.adjustsFontSizeToFitWidth = true
         buttonFavorilereEkle.titleLabel?.lineBreakMode = .byClipping
